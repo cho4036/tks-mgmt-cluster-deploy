@@ -1,0 +1,50 @@
+apiVersion: bootstrap.aws.infrastructure.cluster.x-k8s.io/v1beta1
+kind: AWSIAMConfiguration
+spec:
+  allowAssumeRole: true
+  eks:
+    iamRoleCreation: true
+    managedMachinePool:
+      disable: false
+      extraPolicyAttachments:
+      - "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+      - "arn:aws:iam::aws:policy/AmazonSESFullAccess"
+      - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+      extraStatements:
+      - Action:
+        - "ec2:DescribeInstanceAttribute"
+        Effect: "Allow"
+        Resource:
+        - "*"
+    fargate:
+      disable: true
+  nodes:
+     extraPolicyAttachments:
+     - "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+     - "arn:aws:iam::aws:policy/AmazonSESFullAccess"
+     - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+     extraStatements:
+     - Action:
+       - "ec2:DescribeInstanceAttribute"
+       Effect: "Allow"
+       Resource:
+       - "*"
+  clusterAPIControllers:
+    disabled: false
+    extraStatements:
+    - Action:
+      - "ec2:DescribeInstanceAttribute"
+      - "iam:ListOpenIDConnectProviders"
+      - "iam:GetOpenIDConnectProvider"
+      - "iam:CreateOpenIDConnectProvider"
+      - "iam:TagOpenIDConnectProvider"
+      - "iam:CreatePolicy"
+      - "iam:GetPolicy"
+      - "iam:AttachRolePolicy"
+      - "iam:DetachRolePolicy"
+      - "iam:CreateRole"
+      - "iam:DeleteRole"
+      - "cloudformation:*"
+      Effect: "Allow"
+      Resource:
+      - "*"
